@@ -4,6 +4,59 @@ const dialog = document.querySelector('#admin-dialog');
 const form = document.querySelector('#profile-form');
 const photoInput = document.querySelector('#animal-photo');
 const toast = document.querySelector('#toast');
+const profilesContainer = document.querySelector('#dog-profiles');
+const profiles = Array.isArray(window.SALTY_DOG_PROFILES) ? window.SALTY_DOG_PROFILES : [];
+
+const escapeHtml = (value) => String(value ?? '')
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#039;');
+
+function renderProfile(profile, index) {
+  const cardId = `dog-${profile.slug}`;
+  const facts = [profile.age, profile.sex, profile.breed].filter(Boolean);
+  const photos = Array.isArray(profile.photos) ? profile.photos : [];
+  const mainPhoto = photos[0] || '';
+  const gallery = photos.map((photo, photoIndex) => `
+    <button class="gallery-thumb${photoIndex === 0 ? ' active' : ''}" type="button" data-gallery-src="${escapeHtml(photo)}" data-card-id="${escapeHtml(cardId)}" aria-label="View another photo of ${escapeHtml(profile.name)}">
+      <img src="${escapeHtml(photo)}" alt="">
+    </button>`).join('');
+  const health = (profile.health || []).map((note) => `<span>${escapeHtml(note)}</span>`).join('');
+
+  return `
+    <article class="pet-card" id="${escapeHtml(cardId)}"${index === 0 ? ' data-demo-card' : ''}>
+      <div class="pet-photo-wrap">
+        <img class="pet-main-photo" src="${escapeHtml(mainPhoto)}" alt="${escapeHtml(profile.name)}, ${escapeHtml(profile.breed)}">
+        <span class="status-pill">${escapeHtml(profile.status)}</span>
+        ${gallery ? `<div class="pet-gallery" aria-label="More photos of ${escapeHtml(profile.name)}">${gallery}</div>` : ''}
+      </div>
+      <div class="pet-content">
+        <div class="pet-title-row">
+          <div>
+            <p class="eyebrow">${profile.status.toLowerCase() === 'available' ? 'Available for adoption' : escapeHtml(profile.status)}</p>
+            <h3 class="profile-name">${escapeHtml(profile.name)}</h3>
+          </div>
+          <span class="heart" aria-hidden="true">♡</span>
+        </div>
+        <ul class="pet-facts" aria-label="Animal details">${facts.map((fact) => `<li>${escapeHtml(fact)}</li>`).join('')}</ul>
+        <p class="profile-description">${escapeHtml(profile.description)}</p>
+        ${health ? `<div class="health-notes">${health}</div>` : ''}
+        <a class="text-link" href="#adopt">Learn about adopting <span aria-hidden="true">→</span></a>
+      </div>
+    </article>`;
+}
+
+if (profiles.length) {
+  profilesContainer.innerHTML = profiles.map(renderProfile).join('');
+  const firstProfile = profiles[0];
+  document.querySelector('#admin-title').textContent = `Update ${firstProfile.name}`;
+  document.querySelector('#animal-name').value = firstProfile.name;
+  document.querySelector('#animal-description').value = firstProfile.description;
+} else {
+  profilesContainer.innerHTML = '<p class="profile-error">No animal profiles are available right now.</p>';
+}
 
 menuButton.addEventListener('click', () => {
   const open = menuButton.getAttribute('aria-expanded') === 'true';
@@ -22,11 +75,14 @@ document.querySelectorAll('[data-open-admin]').forEach((button) => button.addEve
   setTimeout(() => document.querySelector('#animal-name').focus(), 50);
 }));
 
-document.querySelectorAll('[data-gallery-src]').forEach((button) => button.addEventListener('click', () => {
-  document.querySelector('#demo-photo').src = button.dataset.gallerySrc;
-  document.querySelectorAll('[data-gallery-src]').forEach((thumb) => thumb.classList.remove('active'));
+profilesContainer.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-gallery-src]');
+  if (!button) return;
+  const card = document.querySelector(`#${CSS.escape(button.dataset.cardId)}`);
+  card.querySelector('.pet-main-photo').src = button.dataset.gallerySrc;
+  card.querySelectorAll('[data-gallery-src]').forEach((thumb) => thumb.classList.remove('active'));
   button.classList.add('active');
-}));
+});
 
 document.querySelector('[data-close-admin]').addEventListener('click', () => dialog.close());
 dialog.addEventListener('close', () => document.body.classList.remove('dialog-open'));
@@ -36,23 +92,25 @@ dialog.addEventListener('click', (event) => {
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
+  const card = document.querySelector('[data-demo-card]');
+  if (!card) return;
   const name = document.querySelector('#animal-name').value.trim();
   const description = document.querySelector('#animal-description').value.trim();
-  document.querySelector('#demo-name').textContent = name;
-  document.querySelector('#demo-description').textContent = description;
+  card.querySelector('.profile-name').textContent = name;
+  card.querySelector('.profile-description').textContent = description;
 
   const file = photoInput.files[0];
   if (file) {
     const reader = new FileReader();
     reader.addEventListener('load', () => {
-      document.querySelector('#demo-photo').src = reader.result;
-      document.querySelector('#demo-photo').alt = `${name} profile preview`;
+      card.querySelector('.pet-main-photo').src = reader.result;
+      card.querySelector('.pet-main-photo').alt = `${name} profile preview`;
     });
     reader.readAsDataURL(file);
   }
 
   dialog.close();
-  document.querySelector('#demo-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2600);
 });

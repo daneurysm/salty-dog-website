@@ -53,33 +53,8 @@
         <p>Every animal has a story. Get to know who they are, what they love and the kind of home where they’ll thrive.</p>
       </div>
 
-      <article class="pet-card" id="demo-card">
-        <div class="pet-photo-wrap">
-          <img id="demo-photo" src="assets/wiggles-3.webp" alt="Wiggles, an adoptable black Staffordshire mix puppy">
-          <span class="status-pill">Available</span>
-          <div class="pet-gallery" aria-label="More photos of Wiggles">
-            <button class="gallery-thumb active" type="button" data-gallery-src="assets/wiggles-3.webp" aria-label="View Wiggles resting with her toy"><img src="assets/wiggles-3.webp" alt=""></button>
-            <button class="gallery-thumb" type="button" data-gallery-src="assets/wiggles-1.webp" aria-label="View Wiggles on a walk"><img src="assets/wiggles-1.webp" alt=""></button>
-            <button class="gallery-thumb" type="button" data-gallery-src="assets/wiggles-2.webp" aria-label="View Wiggles greeting a person"><img src="assets/wiggles-2.webp" alt=""></button>
-            <button class="gallery-thumb" type="button" data-gallery-src="assets/wiggles-4.webp" aria-label="View Wiggles standing on a trail"><img src="assets/wiggles-4.webp" alt=""></button>
-          </div>
-        </div>
-        <div class="pet-content">
-          <div class="pet-title-row">
-            <div>
-              <p class="eyebrow">Available for adoption</p>
-              <h3 id="demo-name">Wiggles</h3>
-            </div>
-            <span class="heart" aria-hidden="true">♡</span>
-          </div>
-          <ul class="pet-facts" aria-label="Animal details">
-            <li>1 year old</li><li>Female</li><li>Staffordshire mix</li>
-          </ul>
-          <p id="demo-description">Wiggles is a sweet, people-loving puppy who is also friendly with other dogs. When playtime starts, she brings the enthusiasm and loves a good rough-and-tumble session. She is spayed, current on her vaccinations and ready to meet the family who will love her energy and affectionate nature.</p>
-          <div class="health-notes"><span>Spayed</span><span>Vaccinations current</span><span>Dog friendly</span></div>
-          <a class="text-link" href="#adopt">Learn about adopting <span aria-hidden="true">→</span></a>
-        </div>
-      </article>
+      <div class="pet-list" id="dog-profiles" aria-live="polite"></div>
+      <noscript><p class="profile-error">Please enable JavaScript to view the animals currently available for adoption.</p></noscript>
 
       <button class="phone-demo" type="button" data-open-admin>
         <span class="phone-demo-icon" aria-hidden="true">＋</span>
@@ -150,18 +125,19 @@
   <dialog class="admin-dialog" id="admin-dialog">
     <form class="admin-panel" id="profile-form" method="dialog">
       <div class="admin-heading">
-        <div><p class="eyebrow">Staff demo</p><h2>Update Wiggles</h2></div>
+        <div><p class="eyebrow">Staff demo</p><h2 id="admin-title">Update profile</h2></div>
         <button class="close-button" type="button" aria-label="Close" data-close-admin>×</button>
       </div>
       <p class="demo-warning">Prototype only: changes appear on this device for preview but are not stored yet.</p>
-      <label>Animal’s name<input id="animal-name" name="name" type="text" value="Wiggles" required></label>
+      <label>Animal’s name<input id="animal-name" name="name" type="text" required></label>
       <label>Replace main photo<input id="animal-photo" name="photo" type="file" accept="image/*"></label>
-      <label>Description<textarea id="animal-description" name="description" rows="7" required>Wiggles is a sweet, people-loving puppy who is also friendly with other dogs. When playtime starts, she brings the enthusiasm and loves a good rough-and-tumble session. She is spayed, current on her vaccinations and ready to meet the family who will love her energy and affectionate nature.</textarea></label>
+      <label>Description<textarea id="animal-description" name="description" rows="7" required></textarea></label>
       <button class="button button-primary admin-submit" type="submit">Preview changes</button>
     </form>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite">Profile preview updated</div>
+  <script src="dogs.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
