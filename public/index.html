@@ -24,7 +24,6 @@
       <a href="#mission">Our mission</a>
       <a href="#adopt">Adopt</a>
       <a href="#help">Help out</a>
-      <button class="staff-link" type="button" data-open-admin>Staff demo</button>
     </nav>
   </header>
 
@@ -56,11 +55,6 @@
       <div class="pet-list" id="dog-profiles" aria-live="polite"></div>
       <noscript><p class="profile-error">Please enable JavaScript to view the animals currently available for adoption.</p></noscript>
 
-      <button class="phone-demo" type="button" data-open-admin>
-        <span class="phone-demo-icon" aria-hidden="true">＋</span>
-        <span><strong>See how easy updating a profile is</strong><small>Try the staff editing demo</small></span>
-        <span aria-hidden="true">→</span>
-      </button>
     </section>
 
     <section class="mission section" id="mission">
@@ -102,10 +96,38 @@
         <p>Salty Dog is powered by people in our community who give their time, resources and attention to animals who need them.</p>
       </div>
       <div class="help-actions">
-        <a href="mailto:saltydoganimalrescue2025@yahoo.com?subject=I%20would%20like%20to%20volunteer"><strong>Volunteer</strong><span>Help with walks, care and enrichment →</span></a>
-        <a href="mailto:saltydoganimalrescue2025@yahoo.com?subject=I%20would%20like%20to%20support%20Salty%20Dog"><strong>Support the rescue</strong><span>Ask about current needs and giving →</span></a>
+        <a href="#contact" data-contact-topic="Volunteer"><strong>Volunteer</strong><span>Help with walks, care and enrichment →</span></a>
+        <a href="#contact" data-contact-topic="Support the rescue"><strong>Support the rescue</strong><span>Ask about current needs and giving →</span></a>
         <a href="https://www.facebook.com/p/The-Salty-Dog-Animal-Rescue-61573830011237/" target="_blank" rel="noopener"><strong>Follow along</strong><span>News and updates on Facebook →</span></a>
       </div>
+    </section>
+    <section class="contact section" id="contact" aria-labelledby="contact-title">
+      <div class="contact-intro">
+        <p class="eyebrow">Get in touch</p>
+        <h2 id="contact-title">A little help goes a long way.</h2>
+        <p>Want to volunteer or help with supplies? Send us a message and tell us what you have in mind.</p>
+        <p>You can also call <a href="tel:+13605809927">(360) 580-9927</a> or <a href="mailto:saltydoganimalrescue2025@yahoo.com">email the rescue</a>.</p>
+      </div>
+      <form id="contact-form" class="contact-form" aria-labelledby="contact-title">
+        <label for="contact-name">Your name</label>
+        <input id="contact-name" name="name" autocomplete="name" maxlength="100" required>
+        <label for="contact-email">Email address</label>
+        <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+        <label for="contact-topic">I’d like to help with</label>
+        <select id="contact-topic" name="topic" required>
+          <option value="Volunteer">Volunteering</option>
+          <option value="Support the rescue">Supporting the rescue</option>
+          <option value="Other">Something else</option>
+        </select>
+        <label for="contact-message">Your message</label>
+        <textarea id="contact-message" name="message" rows="6" minlength="10" maxlength="5000" required></textarea>
+        <div class="contact-trap" aria-hidden="true"><label>Leave this blank<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <p class="contact-note">We’ll use your name, email and message to respond to your inquiry.</p>
+        <div id="contact-verification"></div>
+        <button class="button button-primary" id="contact-send" type="submit" disabled>Send message</button>
+        <p id="contact-status" role="status" aria-live="polite">Loading contact form…</p>
+        <noscript>Please enable JavaScript to send this form, or use the email or phone number above.</noscript>
+      </form>
     </section>
   </main>
 
@@ -122,22 +144,8 @@
     <p>Operating under the North Beach Senior Center 501(c)(3).</p>
   </footer>
 
-  <dialog class="admin-dialog" id="admin-dialog">
-    <form class="admin-panel" id="profile-form" method="dialog">
-      <div class="admin-heading">
-        <div><p class="eyebrow">Staff demo</p><h2 id="admin-title">Update profile</h2></div>
-        <button class="close-button" type="button" aria-label="Close" data-close-admin>×</button>
-      </div>
-      <p class="demo-warning">Prototype only: changes appear on this device for preview but are not stored yet.</p>
-      <label>Animal’s name<input id="animal-name" name="name" type="text" required></label>
-      <label>Replace main photo<input id="animal-photo" name="photo" type="file" accept="image/*"></label>
-      <label>Description<textarea id="animal-description" name="description" rows="7" required></textarea></label>
-      <button class="button button-primary admin-submit" type="submit">Preview changes</button>
-    </form>
-  </dialog>
-
-  <div class="toast" id="toast" role="status" aria-live="polite">Profile preview updated</div>
   <script src="dogs.js"></script>
   <script src="app.js"></script>
+  <script src="contact.js"></script>
 </body>
 </html>

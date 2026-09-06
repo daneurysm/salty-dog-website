@@ -5,7 +5,7 @@ This folder is ready to deploy through Cloudflare Pages.
 ## Publish through GitHub and Cloudflare Pages
 
 1. Create a new GitHub repository, such as `salty-dog-website`.
-2. Upload `README.md` and the complete `public` folder to the repository's `main` branch.
+2. Upload `README.md`, `CONTACT-SETUP.md`, `build.js`, and the complete `public` and `functions` folders to the repository's `main` branch.
 3. In Cloudflare, open **Workers & Pages** and select **Create application**.
 4. Choose **Pages**, then **Connect to Git**.
 5. Authorize GitHub and select the new repository.
@@ -18,9 +18,9 @@ This folder is ready to deploy through Cloudflare Pages.
 
 Cloudflare will create a free `*.pages.dev` address. Every later change pushed to the GitHub `main` branch will deploy automatically.
 
-## Current prototype behavior
+## Profile management
 
-The public site builds its animal profiles automatically from the folders beneath `public/assets/dogs/`. The **Staff demo** lets someone select a photo and edit the first profile in the browser, but it intentionally does not save changes. Persistent staff logins, image uploads, profile storage, and publishing may be added later using Cloudflare Workers, R2, and D1.
+The public site builds animal profiles from the folders beneath `public/assets/dogs/`. Profiles are managed only through repository files; there is no public profile editor. Volunteer and Support links now lead to the contact form. Follow `CONTACT-SETUP.md` to activate email delivery.
 
 ## Dog profile assets
 

@@ -1,9 +1,5 @@
 const menuButton = document.querySelector('.menu-button');
 const nav = document.querySelector('#primary-nav');
-const dialog = document.querySelector('#admin-dialog');
-const form = document.querySelector('#profile-form');
-const photoInput = document.querySelector('#animal-photo');
-const toast = document.querySelector('#toast');
 const profilesContainer = document.querySelector('#dog-profiles');
 const profiles = Array.isArray(window.SALTY_DOG_PROFILES) ? window.SALTY_DOG_PROFILES : [];
 
@@ -14,7 +10,7 @@ const escapeHtml = (value) => String(value ?? '')
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#039;');
 
-function renderProfile(profile, index) {
+function renderProfile(profile) {
   const cardId = `dog-${profile.slug}`;
   const facts = [profile.age, profile.sex, profile.breed].filter(Boolean);
   const photos = Array.isArray(profile.photos) ? profile.photos : [];
@@ -26,7 +22,7 @@ function renderProfile(profile, index) {
   const health = (profile.health || []).map((note) => `<span>${escapeHtml(note)}</span>`).join('');
 
   return `
-    <article class="pet-card" id="${escapeHtml(cardId)}"${index === 0 ? ' data-demo-card' : ''}>
+    <article class="pet-card" id="${escapeHtml(cardId)}">
       <div class="pet-photo-wrap">
         <img class="pet-main-photo" src="${escapeHtml(mainPhoto)}" alt="${escapeHtml(profile.name)}, ${escapeHtml(profile.breed)}">
         <span class="status-pill">${escapeHtml(profile.status)}</span>
@@ -50,10 +46,6 @@ function renderProfile(profile, index) {
 
 if (profiles.length) {
   profilesContainer.innerHTML = profiles.map(renderProfile).join('');
-  const firstProfile = profiles[0];
-  document.querySelector('#admin-title').textContent = `Update ${firstProfile.name}`;
-  document.querySelector('#animal-name').value = firstProfile.name;
-  document.querySelector('#animal-description').value = firstProfile.description;
 } else {
   profilesContainer.innerHTML = '<p class="profile-error">No animal profiles are available right now.</p>';
 }
@@ -69,12 +61,6 @@ nav.querySelectorAll('a').forEach((link) => link.addEventListener('click', () =>
   menuButton.setAttribute('aria-expanded', 'false');
 }));
 
-document.querySelectorAll('[data-open-admin]').forEach((button) => button.addEventListener('click', () => {
-  dialog.showModal();
-  document.body.classList.add('dialog-open');
-  setTimeout(() => document.querySelector('#animal-name').focus(), 50);
-}));
-
 profilesContainer.addEventListener('click', (event) => {
   const button = event.target.closest('[data-gallery-src]');
   if (!button) return;
@@ -84,33 +70,3 @@ profilesContainer.addEventListener('click', (event) => {
   button.classList.add('active');
 });
 
-document.querySelector('[data-close-admin]').addEventListener('click', () => dialog.close());
-dialog.addEventListener('close', () => document.body.classList.remove('dialog-open'));
-dialog.addEventListener('click', (event) => {
-  if (event.target === dialog) dialog.close();
-});
-
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const card = document.querySelector('[data-demo-card]');
-  if (!card) return;
-  const name = document.querySelector('#animal-name').value.trim();
-  const description = document.querySelector('#animal-description').value.trim();
-  card.querySelector('.profile-name').textContent = name;
-  card.querySelector('.profile-description').textContent = description;
-
-  const file = photoInput.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => {
-      card.querySelector('.pet-main-photo').src = reader.result;
-      card.querySelector('.pet-main-photo').alt = `${name} profile preview`;
-    });
-    reader.readAsDataURL(file);
-  }
-
-  dialog.close();
-  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2600);
-});
