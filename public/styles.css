@@ -25,10 +25,32 @@ button, input, textarea { font: inherit; }
 .brand-mark { width: 45px; height: 45px; border-radius: 50%; display: grid; place-items: center; position: relative; overflow: hidden; background: var(--deep); color: white; box-shadow: inset 0 0 0 2px rgba(255,255,255,.2); }
 .brand-mark span { font-family: "Fraunces", serif; font-size: .95rem; position: relative; z-index: 1; }
 .brand-mark i { position: absolute; width: 60px; height: 20px; border-radius: 50%; background: var(--sea); bottom: -10px; transform: rotate(-9deg); }
-nav { display: flex; align-items: center; gap: clamp(1rem,2.4vw,2rem); }
-nav a { text-decoration: none; color: var(--ink); font-weight: 600; font-size: .9rem; border: 0; background: transparent; cursor: pointer; padding: .5rem 0; }
-nav a:hover { color: var(--teal); }
-.menu-button { display: none; border: 1px solid var(--line); background: white; border-radius: .5rem; padding: .55rem .8rem; color: var(--ink); }
+[hidden] { display: none !important; }
+.section-nav {
+  display: flex;
+  justify-content: center;
+  gap: clamp(.25rem, 2vw, 1.5rem);
+  padding: .65rem clamp(1rem, 5vw, 5rem) 0;
+  background: var(--cream);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 84px;
+  z-index: 19;
+  scroll-margin-top: 84px;
+}
+.section-nav a {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: clamp(.9rem, 1.6vw, 1.1rem);
+  font-weight: 700;
+  padding: 1rem 1.25rem;
+  border-bottom: 4px solid transparent;
+  border-radius: .65rem .65rem 0 0;
+  text-align: center;
+}
+.section-nav a:hover { color: var(--teal); background: var(--foam); }
+.section-nav a[aria-selected="true"] { color: var(--deep); background: var(--foam); border-bottom-color: var(--teal); }
+.section-nav a:focus-visible, [role="tabpanel"]:focus-visible { outline: 3px solid var(--teal); outline-offset: -3px; }
 .hero { min-height: min(760px, calc(100vh - 84px)); position: relative; display: flex; align-items: center; overflow: hidden; background: var(--deep); }
 .hero-image, .hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hero-shade { background: linear-gradient(90deg, rgba(5,42,51,.94) 0%, rgba(5,42,51,.76) 38%, rgba(5,42,51,.14) 67%, rgba(5,42,51,.06) 100%); }
@@ -104,9 +126,8 @@ footer { background: #032b34; color: white; padding: 3rem clamp(1.25rem,7vw,7rem
 footer > p { grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,.15); padding-top: 1.2rem; margin: 0; color: rgba(255,255,255,.55); font-size: .78rem; }
 @media (max-width: 850px) {
   .site-header { height: 72px; }
-  .menu-button { display: block; }
-  nav { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--cream); padding: 1rem 1.25rem 1.5rem; flex-direction: column; align-items: stretch; border-bottom: 1px solid var(--line); }
-  nav.open { display: flex; }
+  .section-nav { top: 72px; scroll-margin-top: 72px; gap: 0; padding: .4rem .5rem 0; }
+  .section-nav a { flex: 1; padding: .85rem .35rem; font-size: .85rem; }
   .hero { min-height: 690px; align-items: end; }
   .hero-image { object-position: 68% center; }
   .hero-shade { background: linear-gradient(0deg, rgba(5,42,51,.96) 0%, rgba(5,42,51,.76) 52%, rgba(5,42,51,.12) 100%); }
@@ -125,6 +146,7 @@ footer > p { grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,.15); p
 }
 @media (max-width: 520px) {
   .brand small { display: none; }
+  .section-nav a { font-size: .78rem; padding-inline: .25rem; }
   .hero-actions .button { width: 100%; }
   .pet-photo-wrap { min-height: 280px; }
   .pet-content { padding: 1.5rem; }

@@ -1,5 +1,3 @@
-const menuButton = document.querySelector('.menu-button');
-const nav = document.querySelector('#primary-nav');
 const profilesContainer = document.querySelector('#dog-profiles');
 const profiles = Array.isArray(window.SALTY_DOG_PROFILES) ? window.SALTY_DOG_PROFILES : [];
 
@@ -50,17 +48,6 @@ if (profiles.length) {
   profilesContainer.innerHTML = '<p class="profile-error">No animal profiles are available right now.</p>';
 }
 
-menuButton.addEventListener('click', () => {
-  const open = menuButton.getAttribute('aria-expanded') === 'true';
-  menuButton.setAttribute('aria-expanded', String(!open));
-  nav.classList.toggle('open', !open);
-});
-
-nav.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
-  nav.classList.remove('open');
-  menuButton.setAttribute('aria-expanded', 'false');
-}));
-
 profilesContainer.addEventListener('click', (event) => {
   const button = event.target.closest('[data-gallery-src]');
   if (!button) return;
@@ -70,3 +57,74 @@ profilesContainer.addEventListener('click', (event) => {
   button.classList.add('active');
 });
 
+
+// Enhance ordinary section links into accessible tabs. Without JavaScript,
+// the links still lead to the original, fully visible sections.
+(() => {
+  const tablist = document.querySelector('#section-nav');
+  const tabs = [...tablist.querySelectorAll('a')];
+  const panels = tabs.map(tab => document.querySelector(tab.hash));
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  tablist.setAttribute('role', 'tablist');
+  tabs.forEach((tab, index) => {
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-controls', panels[index].id);
+    panels[index].setAttribute('role', 'tabpanel');
+    panels[index].setAttribute('aria-labelledby', tab.id);
+    panels[index].tabIndex = 0;
+  });
+
+  function selectTab(index, { scroll = false, focus = false } = {}) {
+    tabs.forEach((tab, current) => {
+      const selected = current === index;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      panels[current].hidden = !selected;
+    });
+    document.dispatchEvent(new CustomEvent('rescue:sectionchange', { detail: { id: panels[index].id } }));
+    if (focus) tabs[index].focus({ preventScroll: true });
+    if (scroll) tablist.scrollIntoView({ block: 'start', behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+  }
+
+  function tabForHash(hash) {
+    return panels.findIndex(panel => hash === `#${panel.id}` || (hash.startsWith('#dog-') && panel.id === 'animals'));
+  }
+
+  function navigate(index, focus = false) {
+    if (window.location.hash !== tabs[index].hash) {
+      history.pushState(null, '', tabs[index].hash);
+    }
+    selectTab(index, { scroll: true, focus });
+  }
+
+  tablist.addEventListener('keydown', event => {
+    const current = tabs.indexOf(event.target);
+    if (current === -1) return;
+    let next;
+    if (event.key === 'ArrowRight') next = (current + 1) % tabs.length;
+    if (event.key === 'ArrowLeft') next = (current + tabs.length - 1) % tabs.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = tabs.length - 1;
+    if (next === undefined) return;
+    event.preventDefault();
+    navigate(next, true);
+  });
+
+  // Also handles hero buttons, dog adoption links, and contact shortcuts.
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const index = tabForHash(link.hash);
+    if (index === -1) return;
+    event.preventDefault();
+    navigate(index, tabs.includes(link));
+    if (link.dataset.contactTopic) document.querySelector('#contact-name').focus({ preventScroll: true });
+  });
+
+  function restoreTab() {
+    const index = tabForHash(window.location.hash);
+    selectTab(index === -1 ? 0 : index, { scroll: index !== -1 });
+  }
+  window.addEventListener('hashchange', restoreTab);
+  restoreTab();
+})();

@@ -71,5 +71,15 @@
       window.turnstile.reset(widget);
     }
   });
-  prepare();
+  // Render verification only after the contact panel becomes visible.
+  if (!form.closest('[hidden]')) {
+    prepare();
+  } else {
+    const onSectionChange = (event) => {
+      if (event.detail.id !== 'contact') return;
+      document.removeEventListener('rescue:sectionchange', onSectionChange);
+      prepare();
+    };
+    document.addEventListener('rescue:sectionchange', onSectionChange);
+  }
 })();
