@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>Salty Dog · Management portal</title>
+  <link rel="stylesheet" href="/cms.css">
+</head>
+<body>
+  <header><a class="brand" href="/">The Salty Dog <small>Management portal</small></a><div id="signed-in" hidden><span id="account-label"></span><button type="button" id="logout" class="quiet">Sign out</button></div></header>
+  <main>
+    <p id="notice" role="status" aria-live="polite">Connecting to the portal…</p>
+    <section id="login-view" class="narrow" hidden>
+      <p class="eyebrow">Staff access</p><h1>Welcome back.</h1><p>Sign in to manage the rescue’s dog profiles.</p>
+      <form id="login-form"><label>Email address<input name="email" type="email" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button>Sign in</button></form>
+      <p class="muted">Need access or a password reset? Contact a rescue superuser.</p>
+    </section>
+    <section id="mfa-view" class="narrow" hidden><h1>One more check.</h1><p id="mfa-instructions"></p><form id="mfa-login"><label>Verification method<select id="mfa-factor"></select></label><button type="button" class="quiet" id="send-sms" hidden>Send a text message</button><label>Six-digit verification code<input id="mfa-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label><button>Verify and continue</button></form><button type="button" class="quiet cancel-login">Back to sign in</button></section>
+    <section id="password-view" class="narrow" hidden><h1>Choose your own password.</h1><p>Your account has a temporary password. Replace it before continuing.</p><form id="required-password"><label>New password<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><label>Confirm new password<input name="confirmation" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><p class="muted">Use at least 12 characters. A few unrelated words make a good password.</p><button>Save password</button></form></section>
+    <section id="workspace" hidden>
+      <nav aria-label="Portal"><button type="button" data-view="dogs" class="nav-button">Dog profiles</button><button type="button" data-view="users" class="nav-button" id="users-nav" hidden>Users</button><button type="button" data-view="account" class="nav-button">My account</button></nav>
+      <section id="dogs-view"><div class="page-heading"><div><p class="eyebrow">Animal care</p><h1>Dog profiles</h1><p>Add a new arrival, update their story, or celebrate an adoption.</p></div><button type="button" id="add-dog">+ Add a dog</button></div><label class="search">Find a dog<input id="dog-search" type="search" placeholder="Search by name or breed"></label><div id="dog-list" class="dog-list"></div></section>
+      <section id="editor-view" hidden>
+        <button type="button" id="back-to-dogs" class="quiet">← All dog profiles</button><div class="page-heading"><div><p class="eyebrow">Profile editor</p><h1 id="editor-title">Add a dog</h1><p>Fields marked * are required. Changes go live when you save.</p></div></div>
+        <form id="dog-form">
+          <div class="form-grid"><label>Dog name *<input id="dog-name" name="name" maxlength="100" placeholder="For example, Kaiser" required></label><label>Breed *<input name="breed" maxlength="160" placeholder="For example, German Shepherd mix" required></label></div>
+          <label>Age <span class="muted">(optional)</span><input name="age" maxlength="100" placeholder="For example, about 3 years"></label>
+          <fieldset><legend>Gender *</legend><label class="choice"><input type="radio" name="sex" value="Male" required>Male</label><label class="choice"><input type="radio" name="sex" value="Female" required>Female</label></fieldset>
+          <fieldset><legend>Known compatibility</legend><p class="muted">Check only traits the rescue has confirmed. Unchecked traits will not appear on the profile.</p><label class="choice"><input type="checkbox" name="good_dogs">Good with other dogs</label><label class="choice"><input type="checkbox" name="good_small_animals">Good with cats/small animals</label><label class="choice"><input type="checkbox" name="gentle_children">Gentle with children</label></fieldset>
+          <fieldset><legend>Adoption status *</legend><label class="choice"><input type="radio" name="status" value="available" required>Available</label><label class="choice"><input type="radio" name="status" value="adopted" required>Adopted</label><p class="muted">“Adopted” adds a banner across the main photo and updates the profile’s status.</p></fieldset>
+          <label>Description *<textarea name="description" rows="10" maxlength="30000" placeholder="Tell potential adopters about this dog’s personality, needs, and story." required></textarea></label><p id="word-count" class="muted">0 / 1,000 words</p>
+          <fieldset><legend>Photos *</legend><p class="muted">Add 1–12 photos. JPEG, PNG, or WebP; up to 8 MB each. Select which photo appears first.</p><label class="upload-button">Choose photos<input id="photo-upload" type="file" accept="image/jpeg,image/png,image/webp" multiple></label><div id="photo-list" class="photo-list"></div></fieldset>
+          <div class="form-actions"><button type="button" class="quiet" id="preview-dog">Preview profile</button><button id="save-dog" type="submit">Save profile</button><button type="button" class="quiet" id="cancel-edit">Cancel</button></div>
+        </form>
+        <section id="profile-preview" hidden aria-label="Profile preview"><h2>Profile preview</h2><p class="muted">This is a preview. Save the profile to publish these changes.</p><div id="preview-card"></div></section>
+      </section>
+      <section id="users-view" hidden><div class="page-heading"><div><p class="eyebrow">Superuser tools</p><h1>People with access</h1><p>Regular users can add and edit dogs. Superusers can also delete profiles and manage accounts.</p></div></div><div id="user-list"></div><details class="card"><summary>Add a user</summary><form id="add-user"><label>Name<input name="name" maxlength="100" required></label><label>Email address<input name="email" type="email" required></label><label>Role<select name="role"><option value="editor">Regular user</option><option value="superuser">Superuser</option></select></label><label>Temporary password<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><p class="muted">Give this password to the person privately. They must replace it at first sign-in. No email is sent by this form.</p><button>Create account</button></form></details></section>
+      <section id="account-view" hidden><h1>My account</h1><div class="card"><h2>Change password</h2><form id="change-password"><label>New password<input name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><label>Confirm new password<input name="confirmation" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label><button>Update password</button></form></div><div class="card"><h2>Two-step verification</h2><p>Add a second check to protect your account.</p><div id="factor-list"></div><button type="button" id="enroll-totp">Set up authenticator app</button><form id="sms-enroll" hidden><label>Mobile number, including country code<input name="phone" type="tel" placeholder="+13605551234" required></label><button>Set up text messages</button></form><div id="factor-setup" hidden><div id="qr-code"></div><p id="factor-secret" class="secret"></p><form id="verify-factor"><label>Six-digit verification code<input name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label><button>Enable two-step verification</button></form><button type="button" id="cancel-factor" class="quiet">Cancel setup</button></div></div></section>
+    </section>
+  </main>
+  <dialog id="confirm-dialog"><form method="dialog"><h2 id="confirm-title"></h2><p id="confirm-description"></p><label id="confirm-label">Type the dog’s name to confirm<input id="confirm-input" autocomplete="off"></label><div class="form-actions"><button value="cancel" class="quiet">Cancel</button><button value="confirm" id="confirm-button" class="danger">Confirm</button></div></form></dialog>
+  <script src="/config.js"></script><script type="module" src="/cms.js"></script>
+</body>
+</html>

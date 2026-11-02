@@ -170,3 +170,7 @@ footer > p { grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,.15); p
 #contact-status { margin-bottom: 0; }
 .contact-trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 @media (max-width: 850px) { .contact { grid-template-columns: minmax(0,1fr); } }
+
+/* The adopted banner stays across the cover image, including gallery changes. */
+.adopted-overlay { position: absolute; z-index: 2; left: 0; right: 0; top: 42%; padding: .5rem; text-align: center; background: rgba(6,59,71,.92); color: white; font-size: clamp(1.6rem,4vw,3rem); font-weight: 800; letter-spacing: .18em; pointer-events: none; }
+.profile-description { white-space: pre-wrap; overflow-wrap: anywhere; }

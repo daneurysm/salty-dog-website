@@ -1,5 +1,5 @@
 const profilesContainer = document.querySelector('#dog-profiles');
-const profiles = Array.isArray(window.SALTY_DOG_PROFILES) ? window.SALTY_DOG_PROFILES : [];
+let profiles = Array.isArray(window.SALTY_DOG_PROFILES) ? window.SALTY_DOG_PROFILES : [];
 
 const escapeHtml = (value) => String(value ?? '')
   .replaceAll('&', '&amp;')
@@ -10,6 +10,7 @@ const escapeHtml = (value) => String(value ?? '')
 
 function renderProfile(profile) {
   const cardId = `dog-${profile.slug}`;
+  const adopted = String(profile.status).toLowerCase() === 'adopted';
   const facts = [profile.age, profile.sex, profile.breed].filter(Boolean);
   const photos = Array.isArray(profile.photos) ? profile.photos : [];
   const mainPhoto = photos[0] || '';
@@ -24,6 +25,7 @@ function renderProfile(profile) {
       <div class="pet-photo-wrap">
         <img class="pet-main-photo" src="${escapeHtml(mainPhoto)}" alt="${escapeHtml(profile.name)}, ${escapeHtml(profile.breed)}">
         <span class="status-pill">${escapeHtml(profile.status)}</span>
+        ${adopted ? '<span class="adopted-overlay">ADOPTED</span>' : ''}
         ${gallery ? `<div class="pet-gallery" aria-label="More photos of ${escapeHtml(profile.name)}">${gallery}</div>` : ''}
       </div>
       <div class="pet-content">
@@ -42,11 +44,22 @@ function renderProfile(profile) {
     </article>`;
 }
 
-if (profiles.length) {
-  profilesContainer.innerHTML = profiles.map(renderProfile).join('');
-} else {
-  profilesContainer.innerHTML = '<p class="profile-error">No animal profiles are available right now.</p>';
+async function loadProfiles() {
+  try {
+    const response = await fetch('/api/dogs', { cache: 'no-store' });
+    if (!response.ok) throw new Error('Profiles unavailable');
+    const data = await response.json();
+    if (data.enabled === true && Array.isArray(data.profiles)) profiles = data.profiles;
+    else if (data.enabled !== false) throw new Error('Invalid profile response');
+    profilesContainer.innerHTML = profiles.length
+      ? profiles.map(renderProfile).join('')
+      : '<p class="profile-error">No animal profiles are available right now. Please contact the rescue for updates.</p>';
+  } catch {
+    // Do not resurrect old Available listings when the live database is down.
+    profilesContainer.innerHTML = '<p class="profile-error">Dog profiles are temporarily unavailable. Please call the rescue at <a href="tel:+13605809927">(360) 580-9927</a>.</p>';
+  }
 }
+loadProfiles();
 
 profilesContainer.addEventListener('click', (event) => {
   const button = event.target.closest('[data-gallery-src]');

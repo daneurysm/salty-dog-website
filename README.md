@@ -56,3 +56,10 @@ Write the complete public description here. It may continue across multiple line
 `Name`, `Age`, `Sex`, `Breed`, and `Description` are required. `Status` defaults to `Available`. `Featured photo` selects the main image; otherwise the first photograph alphabetically is used. Separate the `Health` labels with vertical bars (`|`). Every supported image in the `photos` folder is automatically included in the gallery.
 
 To add a dog, copy an existing dog folder, rename it using lowercase letters and hyphens, replace its photographs, and edit `profile.txt`. Commit the folder to GitHub. Cloudflare runs `build.js`, discovers every dog folder, and republishes the profiles automatically.
+
+## Management portal
+
+The Phase 2 CMS adds a separate, authenticated management website, a D1-backed
+profile API, private R2 photo storage, role checks, and optional managed MFA.
+Follow [CMS-SETUP.md](CMS-SETUP.md) for deployment and activation. Keep
+`CMS_ENABLED=false` until account access and imported profiles have been reviewed.

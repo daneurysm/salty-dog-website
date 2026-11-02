@@ -1,0 +1,7 @@
+{
+  "name": "salty-dog-website",
+  "pages_build_output_dir": "public",
+  "compatibility_date": "2026-09-03",
+  "d1_databases": [{ "binding": "DB", "database_name": "salty-dog-cms", "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID" }],
+  "r2_buckets": [{ "binding": "DOG_PHOTOS", "bucket_name": "salty-dog-photos" }]
+}
